@@ -35,10 +35,6 @@ class Agendamento
      */
     private $frequencia;
 
-    public function getTarefa(){
-        return $this->tarefa;
-    }
-
     public function toString(){
         $data = [ 'id' => $this->id,
                  'tarefa'=> $this->tarefa,
@@ -62,6 +58,26 @@ class Agendamento
     public function setId($id)
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of tarefa
+     */ 
+    public function getTarefa()
+    {
+        return $this->tarefa;
+    }
+
+    /**
+     * Set the value of tarefa
+     *
+     * @return  self
+     */ 
+    public function setTarefa($tarefa)
+    {
+        $this->tarefa = $tarefa;
 
         return $this;
     }
