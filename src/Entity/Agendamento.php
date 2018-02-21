@@ -81,4 +81,44 @@ class Agendamento
 
         return $this;
     }
+
+    /**
+     * Get the value of usuario
+     */ 
+    public function getUsuario()
+    {
+        return $this->usuario;
+    }
+
+    /**
+     * Set the value of usuario
+     *
+     * @return  self
+     */ 
+    public function setUsuario($usuario)
+    {
+        $this->usuario = $usuario;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of frequencia
+     */ 
+    public function getFrequencia()
+    {
+        return $this->frequencia;
+    }
+
+    /**
+     * Set the value of frequencia
+     *
+     * @return  self
+     */ 
+    public function setFrequencia($frequencia)
+    {
+        $this->frequencia = $frequencia;
+
+        return $this;
+    }
 }
