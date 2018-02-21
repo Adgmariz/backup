@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+
+	<title>Backup - Login</title>
+	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+    <!-- Bootstrap core CSS     -->
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('build/css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('build/css/animate.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('build/css/paper-dashboard.css') }}">
+        <link rel="stylesheet" href="{{ asset('build/css/themify-icons.css') }}">
+        <link rel="stylesheet" href="{{ asset('build/css/login.css') }}">
+    {% endblock %}
+    <!--  Fonts and icons     -->
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div class="container">
+  <div class="login-container">
+    <div id="output"></div>
+    <div class="avatar"></div>
+
+    <div class="form-box">
+      {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-info btn-block login" type="submit">Login</button>
+      {{ form_end(form) }}
+
+    </div>
+</div>
+</div>
+
+
+</body>
+
+{% block javascripts %}
+
+    <script src="{{ asset('build/js/jquery-1.10.2.js') }}"></script>
+    <script src="{{ asset('build/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('build/js/bootstrap-checkbox-radio.js') }}"></script>
+    <script src="{{ asset('build/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('build/js/chartist.min.js') }}"></script>
+    <script src="{{ asset('build/js/bootstrap-notify.js') }}"></script>
+    <script src="{{ asset('build/js/paper-dashboard.js') }}"></script>
+
+{% endblock %}
+
+</html>
