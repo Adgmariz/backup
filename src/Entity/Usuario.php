@@ -30,14 +30,29 @@ class Usuario
       $this->nome = $nome;
      }
 
-     public function getNome($nome){
+     public function getNome(){
       return $this->nome;
      }
 
+     public function setId($id){
+       $this->id = $id;
+     }
+
+     public function getId(){
+       return $this->id;
+     }
+
+     public function setSenha($senha){
+       $this->senha = $senha;
+     }
+
+     public function getSenha(){
+       return $this->senha;
+     }
+
      public function toString(){
-       $data = [ 'id' => $this->id,
-                'nome'=> $this->nome,
-              'senha' => $this->senha];
+       $data = ['nome'=> $this->nome,
+                'senha' => $this->senha];
        return json_encode($data);
      }
 }
