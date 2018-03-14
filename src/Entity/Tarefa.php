@@ -26,8 +26,6 @@ class Tarefa
      */
     private $descricao;
 
-    //TODO: DEFAULT 1 ($ativo)
-
     /**
      * @ORM\Column(type="integer")
      */
@@ -52,5 +50,13 @@ class Tarefa
 
     public function getDescricao(){
         return $this->descricao;
+    }
+
+    public function setUsuario(Usuario $usuario){
+      $this->usuario = $usuario;
+    }
+
+    public function getUsuario(){
+      return $this->usuario;
     }
 }

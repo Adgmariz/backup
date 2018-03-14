@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use App\Entity\Tarefa;
+use App\Entity\Usuario;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -9,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Agendamento
 {
-    
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -20,7 +23,6 @@ class Agendamento
     /**
      * @ORM\Column(name="id_tarefa")
      * @ORM\ManyToOne(targetEntity="App\Entity\Tarefa")
-     * @ORM\Column(type="integer")
      */
     private $tarefa;
 
@@ -44,7 +46,7 @@ class Agendamento
 
     /**
      * Get the value of id
-     */ 
+     */
     public function getId()
     {
         return $this->id;
@@ -54,7 +56,7 @@ class Agendamento
      * Set the value of id
      *
      * @return  self
-     */ 
+     */
     public function setId($id)
     {
         $this->id = $id;
@@ -64,7 +66,7 @@ class Agendamento
 
     /**
      * Get the value of tarefa
-     */ 
+     */
     public function getTarefa()
     {
         return $this->tarefa;
@@ -74,8 +76,8 @@ class Agendamento
      * Set the value of tarefa
      *
      * @return  self
-     */ 
-    public function setTarefa($tarefa)
+     */
+    public function setTarefa(Tarefa $tarefa)
     {
         $this->tarefa = $tarefa;
 
@@ -84,7 +86,7 @@ class Agendamento
 
     /**
      * Get the value of usuario
-     */ 
+     */
     public function getUsuario()
     {
         return $this->usuario;
@@ -94,8 +96,8 @@ class Agendamento
      * Set the value of usuario
      *
      * @return  self
-     */ 
-    public function setUsuario($usuario)
+     */
+    public function setUsuario(Usuario $usuario)
     {
         $this->usuario = $usuario;
 
@@ -104,7 +106,7 @@ class Agendamento
 
     /**
      * Get the value of frequencia
-     */ 
+     */
     public function getFrequencia()
     {
         return $this->frequencia;
@@ -114,7 +116,7 @@ class Agendamento
      * Set the value of frequencia
      *
      * @return  self
-     */ 
+     */
     public function setFrequencia($frequencia)
     {
         $this->frequencia = $frequencia;
