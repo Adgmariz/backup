@@ -13,6 +13,7 @@ class AgendamentoRepository extends ServiceEntityRepository
         parent::__construct($registry, Agendamento::class);
     }
 
+    
     /*
     public function findBySomething($value)
     {

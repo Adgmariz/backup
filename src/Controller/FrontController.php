@@ -16,7 +16,7 @@
 
   class FrontController extends Controller{
 
-      private function prepareForm(){
+      private function prepareFormLogin(){
         return $this->createFormBuilder(null, array(
             'action' => '/login',
             'method' => 'POST',
@@ -34,7 +34,7 @@
         */
       public function index(){
         //TODO: if/else login para verificar sessão
-        $form = $this->prepareForm();
+        $form = $this->prepareFormLogin();
         return $this->render('front/login.html.twig', [
             'form' => $form->createView()
         ]);
@@ -53,7 +53,7 @@
         * @Route("/login")
         */
       public function login(Request $request){
-        $form = $this->prepareForm();
+        $form = $this->prepareFormLogin();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -90,12 +90,36 @@
         $result = $this->getDoctrine()->getRepository(Agendamento::class)->findAll();
         $tostring = '';
         foreach($result as $res){
-          var_dump($result, $res->getTarefa());exit;
+          //var_dump($res->getTarefa());exit;
           $tostring.=$res->getTarefa();
         }
 
         return new Response($tostring);
         //var_dump($result);exit;
         //->getRepository(LogTarefa::class)
+      }
+
+      /**
+       * @Route("/listaragendamentos")
+       */
+      public function listaragendamentos(){
+        $session = new Session();
+        $session->start();
+        if($session->get('islogged')){
+          
+          $agendamentos = $this->getDoctrine()->getRepository(Agendamento::class)->findAll();
+          //TODO: findbyid pelo id_tarefa e id_usuario usando os repositories para formatar e exibir dados relevantes
+          foreach($agendamentos as $agendamento){
+            //var_dump($res->getTarefa());exit;
+            //$tostring.=$res->getTarefa();
+            $usuarioToSet = $this->getDoctrine()->getRepository(Usuario::class)->findById($agendamento->getUsuario());
+            $agendamento->setUsuario($usuarioToSet[0]);
+            var_dump($agendamento->getUsuario());exit;
+          }
+          return $this->render('front/listaragendamentos.html.twig');
+        }
+        else{
+          return $this->redirect('/');
+        }
       }
   }

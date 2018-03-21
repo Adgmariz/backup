@@ -20,4 +20,15 @@ class UsuarioRepository extends ServiceEntityRepository
           ->getQuery()
           ->getResult()) > 0;
     }
+
+    public function findById($id)
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.id = :nome')->setParameter('id', $id)
+            ->orderBy('u.id', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
