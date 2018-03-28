@@ -108,7 +108,6 @@
         if($session->get('islogged')){
           
           $agendamentos = $this->getDoctrine()->getRepository(Agendamento::class)->findAll();
-          //TODO: findbyid pelo id_tarefa e id_usuario usando os repositories para formatar e exibir dados relevantes
           foreach($agendamentos as $agendamento){
             $usuarioToSet = $this->getDoctrine()->getRepository(Usuario::class)->findById($agendamento->getUsuario());
             $agendamento->setUsuario($usuarioToSet[0]);
