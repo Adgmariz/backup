@@ -89,7 +89,12 @@
     </div>
 
     <div class="main-panel">
-    
+            {% for agendamento in agendamentos%}
+                <h1>{{agendamento.usuario.nome}}</h1>
+                <h1>{{agendamento.tarefa.descricao}}</h1>
+                <h1>{{agendamento.tarefa.datacriacao}}</h1>
+                <h1>{{agendamento.tarefa.dataalteracao}}</h1>
+            {%endfor%}
     </div>
 
         <footer class="footer">

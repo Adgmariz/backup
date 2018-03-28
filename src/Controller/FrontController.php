@@ -110,13 +110,12 @@
           $agendamentos = $this->getDoctrine()->getRepository(Agendamento::class)->findAll();
           //TODO: findbyid pelo id_tarefa e id_usuario usando os repositories para formatar e exibir dados relevantes
           foreach($agendamentos as $agendamento){
-            //var_dump($res->getTarefa());exit;
-            //$tostring.=$res->getTarefa();
             $usuarioToSet = $this->getDoctrine()->getRepository(Usuario::class)->findById($agendamento->getUsuario());
             $agendamento->setUsuario($usuarioToSet[0]);
-            var_dump($agendamento->getUsuario());exit;
+            $tarefaToSet = $this->getDoctrine()->getRepository(Tarefa::class)->findById($agendamento->getTarefa());
+            $agendamento->setTarefa($tarefaToSet[0]);
           }
-          return $this->render('front/listaragendamentos.html.twig');
+          return $this->render('front/listaragendamentos.html.twig', ['agendamentos'=>$agendamentos]);
         }
         else{
           return $this->redirect('/');

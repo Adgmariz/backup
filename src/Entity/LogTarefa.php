@@ -18,6 +18,7 @@ class LogTarefa
     private $id;
 
     /**
+     * @ORM\Column(name="id_agendamento")
      * @ORM\ManyToOne(targetEntity="App\Entity\Agendamento")
      */
     private $agendamento;

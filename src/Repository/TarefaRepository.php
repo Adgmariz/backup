@@ -13,17 +13,6 @@ class TarefaRepository extends ServiceEntityRepository
         parent::__construct($registry, Tarefa::class);
     }
 
-    public function findById($id)
-    {
-        return $this->createQueryBuilder('t')
-            ->where('t.id = :nome')->setParameter('id', $id)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
     /*
     public function findBySomething($value)
     {

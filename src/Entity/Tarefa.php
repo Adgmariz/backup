@@ -17,6 +17,7 @@ class Tarefa
     private $id;
 
     /**
+     *@ORM\Column(name="id_usuario")
      *@ORM\ManyToOne(targetEntity="App\Entity\Usuario")
      */
     private $usuario;
@@ -36,7 +37,6 @@ class Tarefa
      */
     private $caminho;
 
-    //TODO: DEFAULT NOW() ($data_criacao)
 
     /**
      * @ORM\Column(type="datetime")
@@ -58,5 +58,97 @@ class Tarefa
 
     public function getUsuario(){
       return $this->usuario;
+    }
+
+    /**
+     * Set the value of descricao
+     *
+     * @return  self
+     */ 
+    public function setDescricao($descricao)
+    {
+        $this->descricao = $descricao;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of ativo
+     */ 
+    public function getAtivo()
+    {
+        return $this->ativo;
+    }
+
+    /**
+     * Set the value of ativo
+     *
+     * @return  self
+     */ 
+    public function setAtivo($ativo)
+    {
+        $this->ativo = $ativo;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of caminho
+     */ 
+    public function getCaminho()
+    {
+        return $this->caminho;
+    }
+
+    /**
+     * Set the value of caminho
+     *
+     * @return  self
+     */ 
+    public function setCaminho($caminho)
+    {
+        $this->caminho = $caminho;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of data_criacao
+     */ 
+    public function getDataCriacao()
+    {
+        return $this->data_criacao->format('d/m/Y H:i');
+    }
+
+    /**
+     * Set the value of data_criacao
+     *
+     * @return  self
+     */ 
+    public function setDataCriacao($data_criacao)
+    {
+        $this->data_criacao = new Datetime($data_criacao);
+
+        return $this;
+    }
+
+    /**
+     * Get the value of data_alteracao
+     */ 
+    public function getDataAlteracao()
+    {
+        return $this->data_alteracao->format('d/m/Y H:i');
+    }
+
+    /**
+     * Set the value of data_alteracao
+     *
+     * @return  self
+     */ 
+    public function setDataAlteracao($data_alteracao)
+    {
+        $this->data_alteracao = new Datetime($data_alteracao);
+
+        return $this;
     }
 }
