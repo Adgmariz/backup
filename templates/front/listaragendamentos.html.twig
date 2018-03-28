@@ -149,6 +149,7 @@
                                         <th>Descrição</th> 
                                         <th>Data de criação</th>
                                         <th>Última alteração</th>
+                                        <th>Opções</th>
                                     </thead>
                                     <tbody>
                                         {% for agendamento in agendamentos%}
@@ -157,6 +158,16 @@
                                             <td>{{agendamento.tarefa.descricao}}</td>
                                             <td>{{agendamento.tarefa.datacriacao}}</td>
                                             <td>{{agendamento.tarefa.dataalteracao}}</td>
+                                            <td><div class="icon-container">
+                        				        <a href="https://bit.ly/2J4IQx6" span class="ti-pencil"></span><span class="icon-name"> Editar</a>
+                        			            </div>
+                                                <div class="icon-container">
+                        				        <a href="https://bit.ly/2E34tKh" span class="ti-export"></span><span class="icon-name"> Executar</a>
+                        			            </div>
+                                                <div class="icon-container">
+                        				        <a href="https://bit.ly/2E6fxXi" span class="ti-trash"></span><span class="icon-name"> Excluir</a>
+                        			            </div>
+                                            </td>
                                             </tr>
                                         {%endfor%}
                                     </tbody>
