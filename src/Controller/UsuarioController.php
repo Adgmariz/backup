@@ -18,6 +18,7 @@ class UsuarioController extends Controller
       $usuario = $this->getDoctrine()
        ->getRepository(Usuario::class)
        ->checkUsuario('alexis', md5('12345'));
+       $usuario = 'teste';
        return new Response(json_encode($usuario));
     }
 

@@ -99,6 +99,14 @@
         //->getRepository(LogTarefa::class)
       }
 
+      private function prepararAgendamento($agendamento){
+        $usuarioToSet = $this->getDoctrine()->getRepository(Usuario::class)->findById($agendamento->getUsuario());
+        $agendamento->setUsuario($usuarioToSet[0]);//$usuarioToSet[0] é uma instância de Usuario
+        $tarefaToSet = $this->getDoctrine()->getRepository(Tarefa::class)->findById($agendamento->getTarefa());
+        $agendamento->setTarefa($tarefaToSet[0]);
+        return $agendamento;
+      }
+
       /**
        * @Route("/listaragendamentos")
        */
@@ -109,15 +117,33 @@
           
           $agendamentos = $this->getDoctrine()->getRepository(Agendamento::class)->findAll();
           foreach($agendamentos as $agendamento){
-            $usuarioToSet = $this->getDoctrine()->getRepository(Usuario::class)->findById($agendamento->getUsuario());
-            $agendamento->setUsuario($usuarioToSet[0]);
-            $tarefaToSet = $this->getDoctrine()->getRepository(Tarefa::class)->findById($agendamento->getTarefa());
-            $agendamento->setTarefa($tarefaToSet[0]);
+            $agendamento = $this->prepararAgendamento($agendamento);
           }
           return $this->render('front/listaragendamentos.html.twig', ['agendamentos'=>$agendamentos]);
         }
         else{
           return $this->redirect('/');
+        }
+      }
+
+      /**
+       * @Route("/editaragendamentos/{id}")
+       */
+      public function editaragendamento(Agendamento $agendamento = null){
+        try{
+          if($agendamento != null){
+            $agendamento = $this->prepararAgendamento($agendamento);
+            //TODO: criar uma página de edição. tag <SELECT>(html) para 'Usuario' e 'Tarefa'(de acordo com o id)
+            //TODO:(alterar a tarefa que o agendamento está vinculado. Campos de edição(texto) para descrição, frequencia, 
+            return $this->render('front/editaragendamentos.html.twig');
+          }
+          else{
+            throw new \Exception("Objeto 'Agendamento' não encontrado" );
+          }
+          
+        }
+        catch(Exception $ex){
+          return $ex->getTraceAsString();
         }
       }
   }
