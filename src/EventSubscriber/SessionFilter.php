@@ -6,6 +6,7 @@
     use Symfony\Component\EventDispatcher\EventSubscriberInterface;
     use Symfony\Component\HttpKernel\KernelEvents;
     use Symfony\Component\HttpFoundation\Session\Session;
+    use App\Controller\FrontController;
 
     class SessionFilter implements EventSubscriberInterface{
         
@@ -28,18 +29,33 @@
 
         private function checkSession(){
             $this->prepareSession();
+            //var_dump($this->getSession()->all());exit;
             if(!$this->getSession()->get('islogged')){
-                throw new AccessDeniedHttpException('Vocẽ não está logado.');  
+                throw new AccessDeniedHttpException('Você não está logado, retorne para a página principal.');
+                
             }
 
             //$session->get('islogged') ? $this->render('front/index.html.twig') : $this->redirect('/');
         }
 
+        private function logout(){
+            $this->prepareSession();
+            
+            $this->getSession()->invalidate();
+            var_dump($this->getSession()->all());exit;
+        }
+
         public function onKernelController(FilterControllerEvent $event){
             $controller = $event->getController();
             $action = $controller[1];
-            $actionsToAvoidChecking = ["index", "logout"];
-            if($controller[0] instanceof FrontController && array_key_exists($action, $actionsToAvoidChecking)  == false){
+            $actionsToAvoidChecking = ["index", "/", "login"];
+            //var_dump($action,in_array($action, $actionsToAvoidChecking));exit;
+            //$condition1 = $controller[0] instanceof FrontController;
+           //var_dump($action);exit;
+           if($controller[0] instanceof FrontController && $action == "logout"){
+            $this->logout();
+           }
+            else if($controller[0] instanceof FrontController && in_array($action, $actionsToAvoidChecking)  == false){
                 $this->checkSession();
             }
             

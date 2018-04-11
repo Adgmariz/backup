@@ -44,8 +44,9 @@
         * @Route("/dashboard")
         */
       public function dashboard(){
-        $session = new Session();
-        return $session->get('islogged') ? $this->render('front/index.html.twig') : $this->redirect('/');
+        // $session = new Session();
+        // return $session->get('islogged') ? 
+        return $this->render('front/index.html.twig');
       }
 
       /**
@@ -75,8 +76,6 @@
         * @Route("/logout")
         */
       public function logout(){
-        $session = new Session();
-        $session->invalidate();
         return $this->redirect('/');
       }
 
@@ -108,18 +107,11 @@
        * @Route("/listaragendamentos")
        */
       public function listaragendamentos(){
-        $session = new Session();
-        if($session->get('islogged')){
-          
-          $agendamentos = $this->getDoctrine()->getRepository(Agendamento::class)->findAll();
-          foreach($agendamentos as $agendamento){
-            $agendamento = $this->prepararAgendamento($agendamento);
-          }
-          return $this->render('front/listaragendamentos.html.twig', ['agendamentos'=>$agendamentos]);
+        $agendamentos = $this->getDoctrine()->getRepository(Agendamento::class)->findAll();
+        foreach($agendamentos as $agendamento){
+          $agendamento = $this->prepararAgendamento($agendamento);
         }
-        else{
-          return $this->redirect('/');
-        }
+        return $this->render('front/listaragendamentos.html.twig', ['agendamentos'=>$agendamentos]);
       }
 
       /**
