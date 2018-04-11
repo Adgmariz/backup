@@ -45,7 +45,6 @@
         */
       public function dashboard(){
         $session = new Session();
-        $session->start();
         return $session->get('islogged') ? $this->render('front/index.html.twig') : $this->redirect('/');
       }
 
@@ -64,7 +63,6 @@
              ->getRepository(Usuario::class)
              ->checkUsuario($usuario, $senha);
             $session = new Session();
-            $session->start();
             $session->set('islogged', true);
              return $this->redirect($result ? 'dashboard' : '/');
              
@@ -78,7 +76,6 @@
         */
       public function logout(){
         $session = new Session();
-        $session->start();
         $session->invalidate();
         return $this->redirect('/');
       }
@@ -112,7 +109,6 @@
        */
       public function listaragendamentos(){
         $session = new Session();
-        $session->start();
         if($session->get('islogged')){
           
           $agendamentos = $this->getDoctrine()->getRepository(Agendamento::class)->findAll();
