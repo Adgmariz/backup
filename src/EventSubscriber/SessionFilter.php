@@ -40,9 +40,10 @@
 
         private function logout(){
             $this->prepareSession();
-            
-            $this->getSession()->invalidate();
-            var_dump($this->getSession()->all());exit;
+            $this->getSession()->clear();
+            //$this->getSession()->invalidate();
+            $this->prepareSession();
+            //var_dump($this->getSession()->all());exit;
         }
 
         public function onKernelController(FilterControllerEvent $event){

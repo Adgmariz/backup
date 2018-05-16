@@ -135,17 +135,24 @@
         </nav>
 
 
+ 
+
         <div class="main-panel">
             <h2>Editar agendamentos</h2>
             <div class="col-md-5">
                 <form action="/processaeditagend">
                     <h5>Selecione o usuário:</h5>
                     <select>
-                        <option value="usuario.id(TODO)">usuario.nome(TODO)</option>
+                        {% for usuario in usuarios%}
+                                <option value="{{usuario.id}}" {{agendamento.usuario.id == usuario.id ? "selected" : ""}}>{{usuario.nome}}</option>
+                        {%endfor%}
                     </select>
+                    
                     <h5>Selecione a tarefa:</h5>
                         <select>
-                        <option value="tarefa.id(TODO)">tarefa.descricao(TODO)</option>
+                        {% for tarefa in tarefas%}
+                        <option value="{{tarefa.id}}"{{agendamento.tarefa.id == tarefa.id ? "selected" : ""}}>{{tarefa.descricao}}</option>
+                        {%endfor%}
                     </select>
                     <br></br>
                     <input type="submit" value="Confirmar">

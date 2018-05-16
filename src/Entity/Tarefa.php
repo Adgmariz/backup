@@ -48,6 +48,7 @@ class Tarefa
      */
     private $data_alteracao;
 
+    
     public function getDescricao(){
         return $this->descricao;
     }
@@ -148,6 +149,26 @@ class Tarefa
     public function setDataAlteracao($data_alteracao)
     {
         $this->data_alteracao = new Datetime($data_alteracao);
+
+        return $this;
+    }
+
+    /**
+     * Get the value of id
+     */ 
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set the value of id
+     *
+     * @return  self
+     */ 
+    public function setId($id)
+    {
+        $this->id = $id;
 
         return $this;
     }

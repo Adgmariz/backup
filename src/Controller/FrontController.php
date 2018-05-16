@@ -103,6 +103,7 @@
         return $agendamento;
       }
 
+
       /**
        * @Route("/listaragendamentos")
        */
@@ -121,9 +122,13 @@
         try{
           if($agendamento != null){
             $agendamento = $this->prepararAgendamento($agendamento);
+            $usuarios = $this->getDoctrine()->getRepository(Usuario::class)->findAll();
+            $tarefas = $this->getDoctrine()->getRepository(Tarefa::class)->findAll();
             //TODO: criar uma página de edição. tag <SELECT>(html) para 'Usuario' e 'Tarefa'(de acordo com o id)
             //TODO:(alterar a tarefa que o agendamento está vinculado. Campos de edição(texto) para descrição, frequencia, 
-            return $this->render('front/editaragendamentos.html.twig');
+            return $this->render('front/editaragendamentos.html.twig', ['agendamento'=>$agendamento,
+                                                                        'usuarios'   =>$usuarios,
+                                                                        'tarefas'    =>$tarefas]);
           }
           else{
             throw new \Exception("Objeto 'Agendamento' não encontrado" );
