@@ -8,6 +8,7 @@
   use Symfony\Component\Form\Extension\Core\Type\TextType;
   use Symfony\Component\Form\Extension\Core\Type\PasswordType;
   use Symfony\Component\HttpFoundation\Session\Session;
+  use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
   
   use App\Entity\LogTarefa;
   use App\Entity\Tarefa;
@@ -33,7 +34,6 @@
         * @Route("/")
         */
       public function index(){
-        //TODO: if/else login para verificar sessão
         $form = $this->prepareFormLogin();
         return $this->render('front/login.html.twig', [
             'form' => $form->createView()
@@ -124,11 +124,13 @@
             $agendamento = $this->prepararAgendamento($agendamento);
             $usuarios = $this->getDoctrine()->getRepository(Usuario::class)->findAll();
             $tarefas = $this->getDoctrine()->getRepository(Tarefa::class)->findAll();
+            $form = $this->prepareFormEditar($agendamento);
             //TODO: criar uma página de edição. tag <SELECT>(html) para 'Usuario' e 'Tarefa'(de acordo com o id)
             //TODO:(alterar a tarefa que o agendamento está vinculado. Campos de edição(texto) para descrição, frequencia, 
             return $this->render('front/editaragendamentos.html.twig', ['agendamento'=>$agendamento,
                                                                         'usuarios'   =>$usuarios,
-                                                                        'tarefas'    =>$tarefas]);
+                                                                        'tarefas'    =>$tarefas,
+                                                                        'form'       =>$form->createView()]);
           }
           else{
             throw new \Exception("Objeto 'Agendamento' não encontrado" );
@@ -144,15 +146,41 @@
        * @Route("/processaeditagend")
        */
       public function processaEditarAgendamento(){
-        var_dump($_GET, $_POST);exit;
+        //var_dump($_GET, $_POST);exit;
         return new Response(print_r($_POST));
 
       }
-     /* public function processaEditarAgendamento(){
-          $id = $_POST[]
-          $agendamento = $this->getDoctrine()->getRepository(Agendamento::class)->find($id);
-          
-        return $this->listaragendamentos();        
-      }*/
+
+        //$this->getDoctrine()->getRepository(Agendamento::class)->update()
+      private function prepareFormEditar(Agendamento $agendamento){
+        $usuarios = $this->getDoctrine()->getRepository(Usuario::class)->findAll();
+        $tarefas = $this->getDoctrine()->getRepository(Tarefa::class)->findAll();
+
+        
+        return $this->createFormBuilder(null, array(
+            'action' => '/processaeditagend',
+            'method' => 'POST',
+        ))
+        ->add('usuario', ChoiceType::class, array('attr' => [
+                    'label' => 'usuario',
+        //            'value' => $agendamento->getUsuario()->getId(),
+                    'choices'=> $usuarios,
+                    'choice_label' => function($usuario, $key, $index) {
+                      /** @var Usuario $usuario */
+                      return 'teste';
+                  }
+        //          'choice_attr' => function($usuario, $key, $index) {
+        //            return ['class' => 'usuario_'.strtolower($usuario->getNome())];
+        //        }
+        //
+        //->add('tarefa', ChoiceType::class, array('attr' => [
+        //            'label' => 'tarefa',
+        //            'value' => $agendamento->getTarefa()->getId(),
+        //            'choices'=> $tarefas
+        //            'choice_label' => function($tarefa, $key, $index) {
+        //              return strtoupper($tarefa->getDescricao());
+        //          }
+        ]))->getForm();
+      }
       
   }
