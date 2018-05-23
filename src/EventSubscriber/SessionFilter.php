@@ -30,6 +30,7 @@
         private function checkSession(){
             $this->prepareSession();
             //var_dump($this->getSession()->all());exit;
+            //var_dump($this->getSession()->get('islogged'));exit;
             if(!$this->getSession()->get('islogged')){
                 throw new AccessDeniedHttpException('Você não está logado, retorne para a página principal.');
                 

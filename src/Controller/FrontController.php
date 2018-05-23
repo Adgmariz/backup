@@ -139,4 +139,20 @@
           return $ex->getTraceAsString();
         }
       }
+      
+      /**
+       * @Route("/processaeditagend")
+       */
+      public function processaEditarAgendamento(){
+        var_dump($_GET, $_POST);exit;
+        return new Response(print_r($_POST));
+
+      }
+     /* public function processaEditarAgendamento(){
+          $id = $_POST[]
+          $agendamento = $this->getDoctrine()->getRepository(Agendamento::class)->find($id);
+          
+        return $this->listaragendamentos();        
+      }*/
+      
   }
