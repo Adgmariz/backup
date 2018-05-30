@@ -9,7 +9,7 @@
   use Symfony\Component\Form\Extension\Core\Type\PasswordType;
   use Symfony\Component\HttpFoundation\Session\Session;
   use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-  
+
   use App\Entity\LogTarefa;
   use App\Entity\Tarefa;
   use App\Entity\Agendamento;
@@ -45,7 +45,7 @@
         */
       public function dashboard(){
         // $session = new Session();
-        // return $session->get('islogged') ? 
+        // return $session->get('islogged') ?
         return $this->render('front/index.html.twig');
       }
 
@@ -66,7 +66,7 @@
             $session = new Session();
             $session->set('islogged', true);
              return $this->redirect($result ? 'dashboard' : '/');
-             
+
         }
         else{
           return $this->redirect('/');
@@ -126,7 +126,7 @@
             $tarefas = $this->getDoctrine()->getRepository(Tarefa::class)->findAll();
             $form = $this->prepareFormEditar($agendamento);
             //TODO: criar uma página de edição. tag <SELECT>(html) para 'Usuario' e 'Tarefa'(de acordo com o id)
-            //TODO:(alterar a tarefa que o agendamento está vinculado. Campos de edição(texto) para descrição, frequencia, 
+            //TODO:(alterar a tarefa que o agendamento está vinculado. Campos de edição(texto) para descrição, frequencia,
             return $this->render('front/editaragendamentos.html.twig', ['agendamento'=>$agendamento,
                                                                         'usuarios'   =>$usuarios,
                                                                         'tarefas'    =>$tarefas,
@@ -135,13 +135,13 @@
           else{
             throw new \Exception("Objeto 'Agendamento' não encontrado" );
           }
-          
+
         }
         catch(Exception $ex){
           return $ex->getTraceAsString();
         }
       }
-      
+
       /**
        * @Route("/processaeditagend")
        */
@@ -155,32 +155,19 @@
       private function prepareFormEditar(Agendamento $agendamento){
         $usuarios = $this->getDoctrine()->getRepository(Usuario::class)->findAll();
         $tarefas = $this->getDoctrine()->getRepository(Tarefa::class)->findAll();
-
-        
-        return $this->createFormBuilder(null, array(
+        $formBuilder = $this->createFormBuilder(null, array(
             'action' => '/processaeditagend',
             'method' => 'POST',
-        ))
-        ->add('usuario', ChoiceType::class, array('attr' => [
-                    'label' => 'usuario',
-        //            'value' => $agendamento->getUsuario()->getId(),
-                    'choices'=> $usuarios,
-                    'choice_label' => function($usuario, $key, $index) {
-                      /** @var Usuario $usuario */
-                      return 'teste';
-                  }
-        //          'choice_attr' => function($usuario, $key, $index) {
-        //            return ['class' => 'usuario_'.strtolower($usuario->getNome())];
-        //        }
-        //
-        //->add('tarefa', ChoiceType::class, array('attr' => [
-        //            'label' => 'tarefa',
-        //            'value' => $agendamento->getTarefa()->getId(),
-        //            'choices'=> $tarefas
-        //            'choice_label' => function($tarefa, $key, $index) {
-        //              return strtoupper($tarefa->getDescricao());
-        //          }
-        ]))->getForm();
+        ));
+        $formBuilder->add('usuario', ChoiceType::class, [
+            'choices' => [
+                $usuarios
+            ],
+            'choice_label' => function($usuario, $key, $index) {
+                return strtoupper($usuario->getNome());
+            }
+        ]);
+        return $formBuilder->getForm();
       }
-      
+
   }

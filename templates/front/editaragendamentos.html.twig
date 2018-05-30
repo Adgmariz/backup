@@ -135,38 +135,19 @@
         </nav>
 
 
- 
+
 
         <div class="main-panel">
             <h2>Editar agendamentos</h2>
             <div class="col-md-5">
-            <h3> Editando o agendamento "{{agendamento.tarefa.descricao}}", do usuário "{{agendamento.usuario.nome}}". 
-                <form action="/processaeditagend" method="post">
-                    <h5>Selecione o usuário:</h5>
-                    <select>
-                        {% for usuario in usuarios%}
-                            <option name="usuario" value="{{usuario.id}}" {{agendamento.usuario.id == usuario.id ? "selected" : ""}}>{{usuario.nome}}</option>
-                        {%endfor%}
-                    </select>
-                    
-                    <h5>Selecione a tarefa:</h5>
-                        <select>
-                        {% for tarefa in tarefas%}
-                            <option name="tarefa" value="{{tarefa.id}}"{{agendamento.tarefa.id == tarefa.id ? "selected" : ""}}>{{tarefa.descricao}}</option>
-                        {%endfor%}
-                    </select>
-                    <br></br>
-                    <input type="submit" value="Confirmar">
-                </form>
+            <h3> Editando o agendamento "{{agendamento.tarefa.descricao}}", do usuário "{{agendamento.usuario.nome}}". </h3>
 
-            </div>
-            <div class"col-md-5">
-                <div class="form-box">
-                    {{ form_start(form) }}
-                        {{ form_widget(form) }}
-                        <button class="btn btn-info btn-block login" type="submit">Confirmar</button>
-                    {{ form_end(form) }}
-                <div>
+								<h5>Selecione o usuário:</h5>
+								{{ form_start(form) }}
+										{{ form_widget(form) }}
+										<button class="btn btn-info btn-block login" type="submit">Confirmar</button>
+								{{ form_end(form) }}
+
             </div>
         </div>
 

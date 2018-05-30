@@ -9,6 +9,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Usuario
 {
+
+    public function __construct($nome = null){
+      $this->setNome($nome);
+    }
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
