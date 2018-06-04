@@ -9,6 +9,8 @@
   use Symfony\Component\Form\Extension\Core\Type\PasswordType;
   use Symfony\Component\HttpFoundation\Session\Session;
   use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+  use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+  use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
   use App\Entity\LogTarefa;
   use App\Entity\Tarefa;
@@ -146,9 +148,35 @@
        * @Route("/processaeditagend")
        */
       public function processaEditarAgendamento(){
-        //var_dump($_GET, $_POST);exit;
-        return new Response(print_r($_POST));
+        $form = $_POST['form'];
+        $agendamento_id = $form['agendamento'];
+        $usuario_id = $form['usuario'];
+        $tarefa_id = $form['tarefa'];
+        
+        //Transforma o $usuario_id e $tarefa_id em int
+        $usuario_id = intval($usuario_id);
+        $tarefa_id = intval($tarefa_id);
 
+        //Na linha abaixo, $agendamento é um array, no qual a posição 0 corresponde a um objeto do tipo Agendamento.
+        $agendamento = $this->getDoctrine()->getRepository(Agendamento::class)->findById($agendamento_id);
+        //Na linha abaixo, $agendamento é transformado em um objeto do tipo Agendamento.
+        $agendamento = $agendamento[0];
+
+        $usuario = $this->getDoctrine()->getRepository(Usuario::class)->findById($usuario_id);
+        $usuario = $usuario[0];
+        $tarefa = $this->getDoctrine()->getRepository(Tarefa::class)->findById($tarefa_id);
+        $tarefa = $tarefa[0];
+        
+        $agendamento->setUsuario($usuario);
+        $agendamento->setTarefa($tarefa);
+        
+        
+        //-carregar agendamento do banco (->getDoctrine->findById)
+        //-chamar ->setUsuario, com o id recebido nos parametros
+        //-chamar ->setTarefa, com o id recebido nos parametros
+        //-enviar para o banco ->getDoctrine->getRepository->save($agendamento)
+        
+        ///só consegui achar persist e flush
       }
 
         //$this->getDoctrine()->getRepository(Agendamento::class)->update()
@@ -159,14 +187,37 @@
             'action' => '/processaeditagend',
             'method' => 'POST',
         ));
+        $formBuilder->add('agendamento', HiddenType::class, array('attr' => [
+          'value' => $agendamento->getId()
+        ]));
         $formBuilder->add('usuario', ChoiceType::class, [
-            'choices' => [
-                $usuarios
-            ],
-            'choice_label' => function($usuario, $key, $index) {
-                return strtoupper($usuario->getNome());
-            }
+          'choices' => [
+              $usuarios
+          ],
+          'choice_label' => function($usuario, $key, $index) {
+              return strtoupper($usuario->getNome());
+          },
+          'choice_value' => function (Usuario $usuario = null) {
+            return $usuario ? $usuario->getId() : 'x'; 
+          },
+          'data' => $agendamento->getUsuario()
+          ]
+        );
+        $formBuilder->add('tarefa', ChoiceType::class, [
+          'choices' => [
+              $tarefas
+          ],
+          'choice_label' => function($tarefa, $key, $index) {
+              return strtoupper($tarefa->getDescricao());
+          },
+          'choice_value' => function (Tarefa $tarefa = null) {
+            return $tarefa ? $tarefa->getId() : 'x'; 
+          },
+          'data' => $agendamento->getTarefa()
         ]);
+          $formBuilder->add('Confirmar', SubmitType::class, array('attr' => [
+            'class' => 'btn btn-info btn-block login'
+        ]));
         return $formBuilder->getForm();
       }
 
