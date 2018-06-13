@@ -127,8 +127,6 @@
             $usuarios = $this->getDoctrine()->getRepository(Usuario::class)->findAll();
             $tarefas = $this->getDoctrine()->getRepository(Tarefa::class)->findAll();
             $form = $this->prepareFormEditar($agendamento);
-            //TODO: criar uma página de edição. tag <SELECT>(html) para 'Usuario' e 'Tarefa'(de acordo com o id)
-            //TODO:(alterar a tarefa que o agendamento está vinculado. Campos de edição(texto) para descrição, frequencia,
             return $this->render('front/editaragendamentos.html.twig', ['agendamento'=>$agendamento,
                                                                         'usuarios'   =>$usuarios,
                                                                         'tarefas'    =>$tarefas,
@@ -150,33 +148,28 @@
       public function processaEditarAgendamento(){
         $form = $_POST['form'];
         $agendamento_id = $form['agendamento'];
-        $usuario_id = $form['usuario'];
-        $tarefa_id = $form['tarefa'];
-        
-        //Transforma o $usuario_id e $tarefa_id em int
-        $usuario_id = intval($usuario_id);
-        $tarefa_id = intval($tarefa_id);
+        $usuario_id = (int)$form['usuario'];
+        $tarefa_id = (int)$form['tarefa'];
+        //Repositories
+        $agendamentoRepository = $this->getDoctrine()->getRepository(Agendamento::class);
+        $usuarioRepository = $this->getDoctrine()->getRepository(Usuario::class);
+        $tarefaRepository = $this->getDoctrine()->getRepository(Tarefa::class);
+        //Validações
+        $resultAgendamento = $agendamentoRepository->findById($agendamento_id)[0];
+        if($resultAgendamento != NULL){
+          $resultUsuario = $usuarioRepository->findById($usuario_id)[0];
+          $resultTarefa = $tarefaRepository->findById($tarefa_id)[0];
+          if($resultUsuario != NULL && $resultTarefa != NULL){
+              $resultAgendamento->setUsuario($resultUsuario->getId());
+              $resultAgendamento->setTarefa($resultTarefa->getId());
 
-        //Na linha abaixo, $agendamento é um array, no qual a posição 0 corresponde a um objeto do tipo Agendamento.
-        $agendamento = $this->getDoctrine()->getRepository(Agendamento::class)->findById($agendamento_id);
-        //Na linha abaixo, $agendamento é transformado em um objeto do tipo Agendamento.
-        $agendamento = $agendamento[0];
-
-        $usuario = $this->getDoctrine()->getRepository(Usuario::class)->findById($usuario_id);
-        $usuario = $usuario[0];
-        $tarefa = $this->getDoctrine()->getRepository(Tarefa::class)->findById($tarefa_id);
-        $tarefa = $tarefa[0];
-        
-        $agendamento->setUsuario($usuario);
-        $agendamento->setTarefa($tarefa);
-        
-        
-        //-carregar agendamento do banco (->getDoctrine->findById)
-        //-chamar ->setUsuario, com o id recebido nos parametros
-        //-chamar ->setTarefa, com o id recebido nos parametros
-        //-enviar para o banco ->getDoctrine->getRepository->save($agendamento)
-        
-        ///só consegui achar persist e flush
+              // var_dump($resultAgendamento);exit;
+              $entityManager = $this->getDoctrine()->getManager();
+              $entityManager->persist($resultAgendamento);
+              $entityManager->flush($resultAgendamento);
+              return $this->listaragendamentos();
+          }
+        }
       }
 
         //$this->getDoctrine()->getRepository(Agendamento::class)->update()
@@ -221,4 +214,90 @@
         return $formBuilder->getForm();
       }
 
+      /**
+       * @Route("/excluiragendamento/{id}")
+       */
+      public function excluirAgendamento(Agendamento $agendamento = null){
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($agendamento);
+        $entityManager->flush();
+        return $this->listaragendamentos();
+      }
+
+      private function prepareForm($action, Agendamento $agendamento = NULL){
+        $usuarios = $this->getDoctrine()->getRepository(Usuario::class)->findAll();
+        $tarefas = $this->getDoctrine()->getRepository(Tarefa::class)->findAll();
+        $defaultDataTarefa = NULL;
+        $defaultDataUsuario = NULL;
+
+        $formBuilder = $this->createFormBuilder(null, array(
+            'action' => $action,
+            'method' => 'POST',
+        ));
+        if($agendamento != NULL){
+          $formBuilder->add('agendamento', HiddenType::class, array('attr' => [
+            'value' => $agendamento->getId()
+          ]));
+          $defaultDataTarefa = $agendamento->getTarefa();
+          $defaultDataUsuario = $agendamento->getUsuario();
+        }
+        $formBuilder->add('usuario', ChoiceType::class, [
+          'choices' => [
+              $usuarios
+          ],
+          'choice_label' => function($usuario, $key, $index) {
+              return strtoupper($usuario->getNome());
+          },
+          'choice_value' => function (Usuario $usuario = null) {
+            return $usuario ? $usuario->getId() : 'x'; 
+          },
+          'data' => $defaultDataUsuario
+          ]
+        );
+        $formBuilder->add('tarefa', ChoiceType::class, [
+          'choices' => [
+              $tarefas
+          ],
+          'choice_label' => function($tarefa, $key, $index) {
+              return strtoupper($tarefa->getDescricao());
+          },
+          'choice_value' => function (Tarefa $tarefa = null) {
+            return $tarefa ? $tarefa->getId() : 'x'; 
+          },
+          'data' => $defaultDataTarefa
+        ]);
+          $formBuilder->add('Confirmar', SubmitType::class, array('attr' => [
+            'class' => 'btn btn-info btn-block login'
+        ]));
+        return $formBuilder->getForm();
+      }
+
+      /**
+       * @Route("/criaragendamento")
+       */
+      public function criarAgendamento(){
+        $usuarios = $this->getDoctrine()->getRepository(Usuario::class)->findAll();
+        $tarefas = $this->getDoctrine()->getRepository(Tarefa::class)->findAll();
+        $form = $this->prepareForm("/processacriaragend");
+        
+        return $this->render("front/criaragendamento.html.twig",[ 'usuarios'   =>$usuarios,
+                                                                  'tarefas'    =>$tarefas,
+                                                                  'form'       =>$form->createView()]);
+      }
+
+      /**
+       * @Route("/processacriaragend")
+       */
+      public function processaCriarAgendamento(){
+        $form = $_POST['form'];
+        $agendamento = new Agendamento();
+        $agendamento->setUsuario($form['usuario']);
+        $agendamento->setTarefa($form['tarefa']);
+        $agendamento->setFrequencia(1);
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($agendamento);
+        $entityManager->flush($agendamento);
+        
+        return $this->listaragendamentos();
+      }
   }

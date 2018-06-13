@@ -77,7 +77,7 @@ class Agendamento
      *
      * @return  self
      */
-    public function setTarefa(Tarefa $tarefa)
+    public function setTarefa($tarefa)
     {
         $this->tarefa = $tarefa;
 
@@ -97,7 +97,7 @@ class Agendamento
      *
      * @return  self
      */
-    public function setUsuario(Usuario $usuario)
+    public function setUsuario($usuario)
     {
         $this->usuario = $usuario;
 

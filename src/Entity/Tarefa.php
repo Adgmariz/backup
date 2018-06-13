@@ -172,4 +172,8 @@ class Tarefa
 
         return $this;
     }
+
+    public function toString(){
+        return $this->id;
+    }
 }
