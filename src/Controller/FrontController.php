@@ -11,6 +11,7 @@
   use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
   use Symfony\Component\Form\Extension\Core\Type\SubmitType;
   use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+  use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
   use App\Entity\LogTarefa;
   use App\Entity\Tarefa;
@@ -208,6 +209,9 @@
           },
           'data' => $agendamento->getTarefa()
         ]);
+
+        $formBuilder->add('frequencia', IntegerType::class, array('data'=>$agendamento->getFrequencia()));
+
           $formBuilder->add('Confirmar', SubmitType::class, array('attr' => [
             'class' => 'btn btn-info btn-block login'
         ]));
@@ -300,4 +304,96 @@
         
         return $this->listaragendamentos();
       }
+
+      private function prepararTarefa($tarefa){
+        $usuarioToSet = $this->getDoctrine()->getRepository(Usuario::class)->findById($tarefa->getUsuario());
+        $tarefa->setUsuario($usuarioToSet[0]);//$usuarioToSet[0] é uma instância de Usuario
+        return $tarefa;
+      }
+
+      /**
+       * @Route("/listartarefas")
+       */
+      public function listartarefas(){
+        $tarefas = $this->getDoctrine()->getRepository(Tarefa::class)->findAll();
+        foreach($tarefas as $tarefa){
+          $tarefa = $this->prepararTarefa($tarefa);
+        }
+        return $this->render('front/listartarefas.html.twig', ['tarefas'=>$tarefas]);
+      }
+
+      private function prepareFormTarefa(){
+        $usuarios = $this->getDoctrine()->getRepository(Usuario::class)->findAll();
+        $formBuilder = $this->createFormBuilder(null, array(
+          'action' => "/processacriartarefa",
+          'method' => 'POST',
+      ));
+      $formBuilder->add('usuario', ChoiceType::class, [
+        'choices' => [
+            $usuarios
+        ],
+        'choice_label' => function($usuario, $key, $index) {
+            return strtoupper($usuario->getNome());
+        },
+        'choice_value' => function (Usuario $usuario = null) {
+          return $usuario ? $usuario->getId() : 'x'; 
+        }
+        ]);
+        $formBuilder->add('descricao', TextType::class);
+        
+        $formBuilder->add('ativo', ChoiceType::class, [
+          'choices' => array(
+            'Inativo' => 0,
+            'Ativo' => 1,
+        )
+        ]);
+        $formBuilder->add('caminho', TextType::class);
+        $formBuilder->add('Confirmar', SubmitType::class, array('attr' => [
+          'class' => 'btn btn-info btn-block login'
+      ]));
+        return $formBuilder->getForm();
+      }
+
+      /**
+       * @Route("/criartarefa")
+       */
+      public function criarTarefa(){
+        $usuarios = $this->getDoctrine()->getRepository(Usuario::class)->findAll();
+        $form = $this->prepareFormTarefa();
+        return $this->render("front/criartarefa.html.twig",[ 'usuarios'   =>$usuarios,
+                                                             'form'       =>$form->createView()]);
+      }
+
+      /**
+       * @Route("/processacriartarefa")
+       */
+      public function processaCriarTarefa(){
+        $form = $_POST['form'];
+        // var_dump($form);exit;
+        $tarefa = new Tarefa();
+        
+        $usuarioToSet = $form['usuario'];
+        $usuarioToSet = $this->getDoctrine()->getRepository(Usuario::class)->findById($usuarioToSet);
+        $usuario = $usuarioToSet[0];
+
+        $tarefa->setUsuario($usuario);
+        $tarefa->setDescricao($form['descricao']);
+        $tarefa->setAtivo($form['ativo']);
+        $tarefa->setCaminho($form['caminho']);
+
+        $dataCriacao = date('d-m-Y H:i');
+        $tarefa->setDataCriacao($dataCriacao);
+
+        $dataAlteracao = date('d-m-Y H:i');
+        $tarefa->setDataAlteracao($dataAlteracao);
+        
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($tarefa);
+        $entityManager->flush($tarefa);
+        
+        return $this->listaragendamentos();
+      }
+
+
+
   }

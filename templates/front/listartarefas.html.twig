@@ -48,13 +48,13 @@
                         <p>User Profile</p>
                     </a>
                 </li>
-                <li class="active">
+                <li>
                     <a href="/listaragendamentos">
                         <i class="ti-view-list-alt"></i>
                         <p>Listar Agendamentos</p>
                     </a>
                 </li>
-                <li>
+                <li class="active">
                     <a href="/listartarefas">
                         <i class="ti-text"></i>
                         <p>Listar Tarefas</p>
@@ -139,38 +139,39 @@
     <div class="col-md-12">
                         <div class="card">
                             <div class="header">
-                                <h4 class="title">Agendamentos</h4>
-                                <p class="category">e seus detalhes</p>
-                                <a href="/criaragendamento">
-                                <span class="ti-plus">Criar agendamento</span>
+                                <h4 class="title">Tarefas</h4>
+                                <a href="/criartarefa">
+                                <span class="ti-plus">Criar tarefa</span>
                                 </a>
                             </div>
                             <div class="content table-responsive table-full-width">
                                 <table class="table table-striped">
                                     <thead>
                                         <th>Usuário</th>
-                                        <th>Descrição</th> 
+                                        <th>Descrição</th>
+                                        <th>Ativo</th>
+                                        <th>Caminho</th> 
                                         <th>Data de criação</th>
                                         <th>Última alteração</th>
-                                        <th>Frequência(em segundos)</th>
                                         <th>Opções</th>
                                     </thead>
                                     <tbody>
-                                        {% for agendamento in agendamentos%}
+                                        {% for tarefa in tarefas%}
                                             <tr>
-                                            <td>{{agendamento.usuario.nome}}</td>
-                                            <td>{{agendamento.tarefa.descricao}}</td>
-                                            <td>{{agendamento.tarefa.datacriacao}}</td>
-                                            <td>{{agendamento.tarefa.dataalteracao}}</td>
-                                            <td>{{agendamento.frequencia}}</td>
+                                            <td>{{tarefa.usuario.nome}}</td>
+                                            <td>{{tarefa.descricao}}</td>
+                                            <td>{{tarefa.ativo}}</td>
+                                            <td>{{tarefa.caminho}}</td>
+                                            <td>{{tarefa.datacriacao}}</td>
+                                            <td>{{tarefa.dataalteracao}}</td>
                                             <td><div class="icon-container">
-                        				        <a href="/editaragendamentos/{{agendamento.id}}" span class="ti-pencil"></span><span class="icon-name"> Editar</a>
+                        				        <a href="/editartarefas/{{tarefa.id}}" span class="ti-pencil"></span><span class="icon-name"> Editar</a>
                         			            </div>
                                                 <div class="icon-container">
                         				        <a href="https://bit.ly/2E34tKh" span class="ti-export"></span><span class="icon-name"> Executar</a>
                         			            </div>
                                                 <div class="icon-container">
-                        				        <a href="#" span class="ti-trash" onclick="excluir({{agendamento.id}})"></span><span class="icon-name"> Excluir</a>
+                        				        <a href="#" span class="ti-trash" onclick="excluir({{tarefa.id}})"></span><span class="icon-name"> Excluir</a>
                                                 </div>
                                             </td>
                                             </tr>
@@ -227,7 +228,7 @@
     <script>
         function excluir(id){                                                
              var txt;
-             var excluir = "excluiragendamento/";
+             var excluir = "excluirtarefa/";
              var res = excluir.concat(id);
     if (confirm("Tem certeza que deseja excluir?")) {
         window.location.replace(res)
