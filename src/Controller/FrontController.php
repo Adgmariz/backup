@@ -12,6 +12,7 @@
   use Symfony\Component\Form\Extension\Core\Type\SubmitType;
   use Symfony\Component\Form\Extension\Core\Type\HiddenType;
   use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+  use Symfony\Component\Form\Extension\Core\Type\FileType;
 
   use App\Entity\LogTarefa;
   use App\Entity\Tarefa;
@@ -22,8 +23,9 @@
 
       private function prepareFormLogin(){
         return $this->createFormBuilder(null, array(
-            'action' => '/login',
-            'method' => 'POST',
+            'action'  => '/login',
+            'method'  => 'POST',
+            'enctype' => 'multipart/form-data'
         ))
         ->add('usuario', TextType::class, array('attr' => [
                     'placeholder' => 'usuario'
@@ -340,14 +342,8 @@
         }
         ]);
         $formBuilder->add('descricao', TextType::class);
-        
-        $formBuilder->add('ativo', ChoiceType::class, [
-          'choices' => array(
-            'Inativo' => 0,
-            'Ativo' => 1,
-        )
-        ]);
         $formBuilder->add('caminho', TextType::class);
+        // $formBuilder->add('caminho', FileType::class);
         $formBuilder->add('Confirmar', SubmitType::class, array('attr' => [
           'class' => 'btn btn-info btn-block login'
       ]));
@@ -370,16 +366,27 @@
       public function processaCriarTarefa(){
         $form = $_POST['form'];
         // var_dump($form);exit;
+        // var_dump($_FILES);exit;
         $tarefa = new Tarefa();
         
         $usuarioToSet = $form['usuario'];
         $usuarioToSet = $this->getDoctrine()->getRepository(Usuario::class)->findById($usuarioToSet);
         $usuario = $usuarioToSet[0];
+        $usuarioId = $usuario->getId();
 
-        $tarefa->setUsuario($usuario);
+        $tarefa->setUsuario($usuarioId);
         $tarefa->setDescricao($form['descricao']);
-        $tarefa->setAtivo($form['ativo']);
+        $tarefa->setAtivo(1);
         $tarefa->setCaminho($form['caminho']);
+        $caminhoExists = file_exists($tarefa->getCaminho());
+
+        if($caminhoExists){
+          $arrayBarras = explode('/', $tarefa->getCaminho());
+          $pos = count($arrayBarras) - 1;
+          
+          var_dump($pos, $arrayBarras);exit;
+        }
+        // var_dump($var);exit;
 
         $dataCriacao = date('d-m-Y H:i');
         $tarefa->setDataCriacao($dataCriacao);
@@ -391,7 +398,7 @@
         $entityManager->persist($tarefa);
         $entityManager->flush($tarefa);
         
-        return $this->listaragendamentos();
+        return $this->listartarefas();
       }
 
 

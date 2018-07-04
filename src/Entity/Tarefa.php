@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use \Datetime;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TarefaRepository")
@@ -53,7 +54,7 @@ class Tarefa
         return $this->descricao;
     }
 
-    public function setUsuario(Usuario $usuario){
+    public function setUsuario($usuario){
       $this->usuario = $usuario;
     }
 
