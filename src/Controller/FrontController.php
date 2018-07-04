@@ -24,8 +24,7 @@
       private function prepareFormLogin(){
         return $this->createFormBuilder(null, array(
             'action'  => '/login',
-            'method'  => 'POST',
-            'enctype' => 'multipart/form-data'
+            'method'  => 'POST'
         ))
         ->add('usuario', TextType::class, array('attr' => [
                     'placeholder' => 'usuario'
