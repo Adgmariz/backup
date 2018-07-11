@@ -379,13 +379,28 @@
         $tarefa->setCaminho($form['caminho']);
         $caminhoExists = file_exists($tarefa->getCaminho());
 
+
         if($caminhoExists){
           $arrayBarras = explode('/', $tarefa->getCaminho());
+          $caminho = $tarefa->getCaminho();
           $pos = count($arrayBarras) - 1;
-          
-          var_dump($pos, $arrayBarras);exit;
+          $isFile = strpos($arrayBarras[$pos], '.');
+          $comando = "cp";
+          $args = " ";
+          if($isFile !== false){
+            //passar cp -R path/pasta /home/backup
+            $args = " -R ";
+          }
+          exec($comando.$args.$caminho." /home/backup");
+
+        }
+        else{
+          echo 'caminho inexistente';
         }
         // var_dump($var);exit;
+        var_dump(exec('cp /home/alexis/Downloads/Redacao_Enem.tif /home/backup/', $output, $result), $output, $result);exit;
+        //se $result for diferente de 0, é pq falhou.
+
 
         $dataCriacao = date('d-m-Y H:i');
         $tarefa->setDataCriacao($dataCriacao);
