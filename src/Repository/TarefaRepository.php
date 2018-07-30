@@ -13,6 +13,16 @@ class TarefaRepository extends ServiceEntityRepository
         parent::__construct($registry, Tarefa::class);
     }
 
+    public function findByCaminho($caminho)
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.caminho = :caminho')->setParameter('caminho', $caminho)
+            ->andWhere('t.ativo = :ativo')->setParameter('ativo', '1')
+            ->orderBy('t.id', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult();
+    }
     /*
     public function findBySomething($value)
     {

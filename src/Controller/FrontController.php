@@ -377,44 +377,150 @@
         $tarefa->setDescricao($form['descricao']);
         $tarefa->setAtivo(1);
         $tarefa->setCaminho($form['caminho']);
-        $caminhoExists = file_exists($tarefa->getCaminho());
-
-
-        if($caminhoExists){
-          $arrayBarras = explode('/', $tarefa->getCaminho());
-          $caminho = $tarefa->getCaminho();
-          $pos = count($arrayBarras) - 1;
-          $isFile = strpos($arrayBarras[$pos], '.');
-          $comando = "cp";
-          $args = " ";
-          if($isFile !== false){
-            //passar cp -R path/pasta /home/backup
-            $args = " -R ";
-          }
-          exec($comando.$args.$caminho." /home/backup");
-
-        }
-        else{
-          echo 'caminho inexistente';
-        }
-        // var_dump($var);exit;
-        var_dump(exec('cp /home/alexis/Downloads/Redacao_Enem.tif /home/backup/', $output, $result), $output, $result);exit;
-        //se $result for diferente de 0, é pq falhou.
-
-
         $dataCriacao = date('d-m-Y H:i');
         $tarefa->setDataCriacao($dataCriacao);
-
         $dataAlteracao = date('d-m-Y H:i');
         $tarefa->setDataAlteracao($dataAlteracao);
+        $caminhoExists = file_exists($tarefa->getCaminho());
+
+        if($caminhoExists){
+          $tarefaExists = $this->getDoctrine()
+          ->getRepository(Tarefa::class)
+          ->findByCaminho($tarefa->getCaminho());
+          //Se $tarefaExists for um array vazio, é porque não existe tarefa com o caminho informado.
+          $tarefaExists = count($tarefaExists);
+          if($tarefaExists == 0){
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($tarefa);
+            $entityManager->flush($tarefa);
+            return $this->listartarefas();
+          }
+          else{
+            return $this->render('front/tarefaexistente.html.twig');
+          }
+        }
+        else{
+          return $this->render('front/caminhoinvalido.html.twig');
+        }
+        // var_dump($var);exit;
+        // var_dump(exec('cp /home/alexis/Downloads/Redacao_Enem.tif /home/backup/', $output, $result), $output, $result);exit;
+        //se $result for diferente de 0, é pq falhou.
         
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($tarefa);
-        $entityManager->flush($tarefa);
-        
-        return $this->listartarefas();
+        }
+
+        /**
+       * @Route("/executartarefa/{id}")
+       */
+        public function executarTarefa(Tarefa $tarefa = null){
+          if($tarefa != null){
+            $caminho = $tarefa->getCaminho();
+            $arrayBarras = explode('/', $tarefa->getCaminho());
+            $pos = count($arrayBarras) - 1;
+            $isFile = strpos($arrayBarras[$pos], '.');
+            $comando = "cp -f";
+            $args = " ";
+            if($isFile == false){
+              //passar cp -R path/pasta /home/backup
+              $args = " -R ";
+            }
+            exec($comando.$args.$caminho." /home/backup", $output, $result);
+            // var_dump($comando.$args.$caminho." /home/backup");exit;
+            return $this->listartarefas();
+          }
+          else{
+            throw new \Exception("Objeto 'Tarefa' não encontrado");
+          }
+        }
+
+        private function prepareFormEditarTarefa(Tarefa $tarefa){
+          $usuarios = $this->getDoctrine()->getRepository(Usuario::class)->findAll();
+        $formBuilder = $this->createFormBuilder(null, array(
+          'action' => "/processaeditatarefa",
+          'method' => 'POST',
+        ));
+        $formBuilder->add('usuario', ChoiceType::class, [
+        'choices' => [
+            $usuarios
+        ],
+        'choice_label' => function($usuario, $key, $index) {
+            return strtoupper($usuario->getNome());
+        },
+        'choice_value' => function (Usuario $usuario = null) {
+          // var_dump($usuario);exit;
+          return $usuario ? $usuario->getId() : 'x'; 
+        },
+        'data' => $tarefa->getUsuario()
+        ]);
+        $formBuilder->add('descricao', TextType::class, [
+          'data' => $tarefa->getDescricao()
+        ]);
+        $formBuilder->add('caminho', TextType::class, [
+          'data' => $tarefa->getCaminho()
+        ]);
+        $formBuilder->add('tarefa', HiddenType::class, array('attr' => [
+          'value' => $tarefa->getId()
+        ]));
+        $formBuilder->add('Confirmar', SubmitType::class, array('attr' => [
+          'class' => 'btn btn-info btn-block login'
+      ]));
+        return $formBuilder->getForm();
+        }
+
+      /**
+       * @Route("/editartarefas/{id}")
+       */
+      public function editartarefas(Tarefa $tarefa = null){
+        if($tarefa != null){
+          $usuarios = $this->getDoctrine()->getRepository(Usuario::class)->findAll();
+          $tarefa = $this->prepararTarefa($tarefa);
+          $form = $this->prepareFormEditarTarefa($tarefa);
+          return $this->render("front/editartarefa.html.twig",['usuarios'   =>$usuarios,
+                                                              'form'       =>$form->createView()]);
+        }
+        else{
+          throw new \Exception("Objeto 'Tarefa' não encontrado" );
+        }
       }
 
+      /**
+       * @Route("/processaeditatarefa")
+       */
+      public function processaEditaTarefa(){
+        $form = $_POST['form'];
+        $usuario_id = (int)$form['usuario'];
+        $descricao = $form['descricao'];
+        $caminho = $form['caminho'];
+        $tarefa = $form['tarefa'];
+        //Repositories
+        $usuarioRepository = $this->getDoctrine()->getRepository(Usuario::class);
+        $tarefaRepository = $this->getDoctrine()->getRepository(Tarefa::class);
+        //Validações
+        $resultTarefa = $tarefaRepository->findById($tarefa)[0];
+
+        if($resultTarefa != NULL){
+          $resultUsuario = $usuarioRepository->findById($usuario_id)[0];
+          if($resultUsuario != NULL){
+              $resultTarefa->setUsuario($resultUsuario->getId());
+              $resultTarefa->setDescricao($descricao);
+              $resultTarefa->setCaminho($caminho);
+              // var_dump($resultAgendamento);exit;
+              $entityManager = $this->getDoctrine()->getManager();
+              $entityManager->persist($resultTarefa);
+              $entityManager->flush($resultTarefa);
+              return $this->listartarefas();
+         }
+        }
+      }
+
+      /**
+       * @Route("/excluirtarefa/{id}")
+       */
+      public function excluirTarefa(Tarefa $tarefa = null){
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($tarefa);
+        $entityManager->flush();
+        return $this->listartarefas();
+      }
 
 
   }
