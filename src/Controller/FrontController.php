@@ -127,7 +127,7 @@
           if($agendamento != null){
             $agendamento = $this->prepararAgendamento($agendamento);
             $usuarios = $this->getDoctrine()->getRepository(Usuario::class)->findAll();
-            $tarefas = $this->getDoctrine()->getRepository(Tarefa::class)->findAll();
+            $tarefas = $this->getDoctrine()->getRepository(Tarefa::class)->fetchAllAtivos();
             $form = $this->prepareFormEditar($agendamento);
             return $this->render('front/editaragendamentos.html.twig', ['agendamento'=>$agendamento,
                                                                         'usuarios'   =>$usuarios,
@@ -177,7 +177,7 @@
         //$this->getDoctrine()->getRepository(Agendamento::class)->update()
       private function prepareFormEditar(Agendamento $agendamento){
         $usuarios = $this->getDoctrine()->getRepository(Usuario::class)->findAll();
-        $tarefas = $this->getDoctrine()->getRepository(Tarefa::class)->findAll();
+        $tarefas = $this->getDoctrine()->getRepository(Tarefa::class)->fetchAllAtivos();
         $formBuilder = $this->createFormBuilder(null, array(
             'action' => '/processaeditagend',
             'method' => 'POST',
@@ -226,12 +226,12 @@
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($agendamento);
         $entityManager->flush();
-        return $this->listaragendamentos();
+        return $this->redirect('/listaragendamentos');
       }
 
       private function prepareForm($action, Agendamento $agendamento = NULL){
         $usuarios = $this->getDoctrine()->getRepository(Usuario::class)->findAll();
-        $tarefas = $this->getDoctrine()->getRepository(Tarefa::class)->findAll();
+        $tarefas = $this->getDoctrine()->getRepository(Tarefa::class)->fetchAllAtivos();
         $defaultDataTarefa = NULL;
         $defaultDataUsuario = NULL;
 
@@ -281,13 +281,8 @@
        * @Route("/criaragendamento")
        */
       public function criarAgendamento(){
-        $usuarios = $this->getDoctrine()->getRepository(Usuario::class)->findAll();
-        $tarefas = $this->getDoctrine()->getRepository(Tarefa::class)->findAll();
         $form = $this->prepareForm("/processacriaragend");
-        
-        return $this->render("front/criaragendamento.html.twig",[ 'usuarios'   =>$usuarios,
-                                                                  'tarefas'    =>$tarefas,
-                                                                  'form'       =>$form->createView()]);
+        return $this->render("front/criaragendamento.html.twig",['form' => $form->createView()]);
       }
 
       /**
@@ -303,7 +298,7 @@
         $entityManager->persist($agendamento);
         $entityManager->flush($agendamento);
         
-        return $this->listaragendamentos();
+        return $this->redirect('/listaragendamentos');
       }
 
       private function prepararTarefa($tarefa){
@@ -316,7 +311,7 @@
        * @Route("/listartarefas")
        */
       public function listartarefas(){
-        $tarefas = $this->getDoctrine()->getRepository(Tarefa::class)->findAll();
+        $tarefas = $this->getDoctrine()->getRepository(Tarefa::class)->fetchAllAtivos();
         foreach($tarefas as $tarefa){
           $tarefa = $this->prepararTarefa($tarefa);
         }
@@ -516,10 +511,11 @@
        * @Route("/excluirtarefa/{id}")
        */
       public function excluirTarefa(Tarefa $tarefa = null){
+        $tarefa->setAtivo(0);
         $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($tarefa);
+        $entityManager->persist($tarefa);
         $entityManager->flush();
-        return $this->listartarefas();
+        return $this->redirect('/listartarefas');
       }
 
 

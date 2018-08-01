@@ -23,6 +23,14 @@ class TarefaRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function fetchAllAtivos(){
+        return $this->createQueryBuilder('t')
+            ->Where('t.ativo = :ativo')->setParameter('ativo', '1')
+            ->orderBy('t.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
     /*
     public function findBySomething($value)
     {
