@@ -152,6 +152,8 @@
         $agendamento_id = $form['agendamento'];
         $usuario_id = (int)$form['usuario'];
         $tarefa_id = (int)$form['tarefa'];
+        $frequencia = $form['frequencia'];
+
         //Repositories
         $agendamentoRepository = $this->getDoctrine()->getRepository(Agendamento::class);
         $usuarioRepository = $this->getDoctrine()->getRepository(Usuario::class);
@@ -164,12 +166,13 @@
           if($resultUsuario != NULL && $resultTarefa != NULL){
               $resultAgendamento->setUsuario($resultUsuario->getId());
               $resultAgendamento->setTarefa($resultTarefa->getId());
+              $resultAgendamento->setFrequencia($frequencia);
 
               // var_dump($resultAgendamento);exit;
               $entityManager = $this->getDoctrine()->getManager();
               $entityManager->persist($resultAgendamento);
               $entityManager->flush($resultAgendamento);
-              return $this->listaragendamentos();
+              return $this->redirect('/listaragendamentos');
           }
         }
       }
@@ -271,6 +274,7 @@
           },
           'data' => $defaultDataTarefa
         ]);
+          $formBuilder->add('frequencia', IntegerType::class);
           $formBuilder->add('Confirmar', SubmitType::class, array('attr' => [
             'class' => 'btn btn-info btn-block login'
         ]));
@@ -293,7 +297,7 @@
         $agendamento = new Agendamento();
         $agendamento->setUsuario($form['usuario']);
         $agendamento->setTarefa($form['tarefa']);
-        $agendamento->setFrequencia(1);
+        $agendamento->setFrequencia($form['frequencia']);
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($agendamento);
         $entityManager->flush($agendamento);
