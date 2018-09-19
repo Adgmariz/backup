@@ -29,8 +29,6 @@
 
         private function checkSession(){
             $this->prepareSession();
-            //var_dump($this->getSession()->all());exit;
-            //var_dump($this->getSession()->get('islogged'));exit;
             if(!$this->getSession()->get('islogged')){
                 throw new AccessDeniedHttpException('Você não está logado, retorne para a página principal.');
                 
@@ -50,10 +48,7 @@
         public function onKernelController(FilterControllerEvent $event){
             $controller = $event->getController();
             $action = $controller[1];
-            $actionsToAvoidChecking = ["index", "/", "login"];
-            //var_dump($action,in_array($action, $actionsToAvoidChecking));exit;
-            //$condition1 = $controller[0] instanceof FrontController;
-           //var_dump($action);exit;
+            $actionsToAvoidChecking = ["index", "/", "login", "processaAgendamentos"];
            if($controller[0] instanceof FrontController && $action == "logout"){
             $this->logout();
            }

@@ -167,7 +167,7 @@
                         				        <a href="/editaragendamentos/{{agendamento.id}}" span class="ti-pencil"></span><span class="icon-name"> Editar</a>
                         			            </div>
                                                 <div class="icon-container">
-                        				        <a href="https://bit.ly/2E34tKh" span class="ti-export"></span><span class="icon-name"> Executar</a>
+                        				        <a href="#" span class="ti-export" onclick="executar({{agendamento.id}})"></span><span class="icon-name"> Executar</a>
                         			            </div>
                                                 <div class="icon-container">
                         				        <a href="#" span class="ti-trash" onclick="excluir({{agendamento.id}})"></span><span class="icon-name"> Excluir</a>
@@ -236,6 +236,25 @@
     }
         }
     </script>
+    <script>
+    function executar(id) {
+        var xhttp;
+        xhttp=new XMLHttpRequest();
+        xhttp.onloadend = function() {
+            var json = JSON.parse(this.response);
+            if (this.readyState == 4 && this.status == 200 && json.result == true){
+                alert("Agendamento executado com sucesso!");
+            }
+            else{
+                alert("Falha ao executar o agendamento.");
+            }
+        };
+        xhttp.open("GET", "/ajax/executar/"+id, true);
+        xhttp.send();
+    }
+    </script>
 {% endblock %}
+  
+}
 
 </html>

@@ -32,8 +32,28 @@ class LogTarefa
       return $this->agendamento;
     }
 
-    public function setAgendamento(Agendamento $agendamento){
+    public function setAgendamento($agendamento){
       $this->agendamento = $agendamento;
     }
 
+
+    /**
+     * Get the value of log
+     */ 
+    public function getLog()
+    {
+        return $this->log;
+    }
+
+    /**
+     * Set the value of log
+     *
+     * @return  self
+     */ 
+    public function setLog($log)
+    {
+        $this->log = $log;
+
+        return $this;
+    }
 }

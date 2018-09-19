@@ -36,6 +36,11 @@ class Agendamento
      * @ORM\Column(type="integer")
      */
     private $frequencia;
+    
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $data_ultima_exec;
 
     public function toString(){
         $data = [ 'id' => $this->id,
@@ -122,5 +127,34 @@ class Agendamento
         $this->frequencia = $frequencia;
 
         return $this;
+    }
+
+    /**
+     * Get the value of data_ultima_exec
+     */ 
+    public function getData_ultima_exec()
+    {
+        return $this->data_ultima_exec;
+    }
+
+    /**
+     * Set the value of data_ultima_exec
+     *
+     * @return  self
+     */ 
+    public function setData_ultima_exec($data_ultima_exec)
+    {
+        $this->data_ultima_exec = $data_ultima_exec;
+
+        return $this;
+    }
+
+    public function getTimeToAdd(){
+        switch($this->getFrequencia()){
+            case 1: return 10;
+            case 2: return 20;
+            case 3: return 30;
+            default: return 0;
+        }
     }
 }

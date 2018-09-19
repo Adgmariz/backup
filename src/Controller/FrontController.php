@@ -410,7 +410,7 @@
         /**
        * @Route("/executartarefa/{id}")
        */
-        public function executarTarefa(Tarefa $tarefa = null){
+        public function executarTarefa(Tarefa $tarefa = null, $isAjax = null){
           if($tarefa != null){
             $caminho = $tarefa->getCaminho();
             $arrayBarras = explode('/', $tarefa->getCaminho());
@@ -424,7 +424,7 @@
             }
             exec($comando.$args.$caminho." /home/backup", $output, $result);
             // var_dump($comando.$args.$caminho." /home/backup");exit;
-            return $this->listartarefas();
+            return $isAjax ? new Response(json_encode(['result'=> $result == 0])) : $this->listartarefas();
           }
           else{
             throw new \Exception("Objeto 'Tarefa' não encontrado");
@@ -522,5 +522,51 @@
         return $this->redirect('/listartarefas');
       }
 
+      /**
+       * @Route("/ajax/executar/{id}")
+       */
+      public function ajax(Agendamento $agendamento = null){
+        if($agendamento != null){
+          $agendamento = $this->prepararAgendamento($agendamento);
+          $tarefa = $agendamento->getTarefa();
+          return $this->executarTarefa($tarefa, true);  
+        }
+        else{
+          return new Response('agendamento é nulo');
+        }
+      }
 
+      /**
+       * @Route("/processaagendamentos")
+       */
+      public function processaAgendamentos(){
+        // $logs = $this->getDoctrine()->getRepository(LogTarefa::class)->findAll();
+        $agendamentos = $this->getDoctrine()->getRepository(Agendamento::class)->findAll();
+        $agendamentosParaExecutar = array();
+        foreach($agendamentos as $agendamento){
+          $agendamento = $this->prepararAgendamento($agendamento);
+          $date = \DateTime::createFromFormat('j-M-Y', '15-Feb-2009');
+          $date2 = new \DateTime();
+          $date2->setTimestamp(mktime());
+
+          $agendamento->setData_ultima_exec($date);
+          $datediff = date_diff($agendamento->getData_ultima_exec(), $date2);
+          var_dump($datediff);exit;
+          // if($agendamento->getData_ultima_exec())
+        }
+
+        // $interval = date_diff($datetime1, $datetime2);
+
+        // $log = new Logtarefa();
+        // $log->setAgendamento(4);
+        // $log->setLog('a');
+
+        // $entityManager = $this->getDoctrine()->getManager();
+        // $entityManager->persist($log);
+        // $entityManager->flush($log);
+        return new Response('log salvo.');
+      }
+
+      //date()
+      //mktime()
   }
