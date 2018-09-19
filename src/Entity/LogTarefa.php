@@ -24,6 +24,12 @@ class LogTarefa
     private $agendamento;
 
     /**
+     * @ORM\Column(name="id_tarefa")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Tarefa")
+     */
+    private $tarefa;
+
+    /**
      * @ORM\Column(type="blob")
      */
     private $log;
@@ -36,6 +42,13 @@ class LogTarefa
       $this->agendamento = $agendamento;
     }
 
+    public function getTarefa(){
+        return $this->tarefa;
+    }
+
+    public function setTarefa($tarefa){
+        $this->tarefa = $tarefa;
+    }
 
     /**
      * Get the value of log

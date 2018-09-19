@@ -410,7 +410,7 @@
         /**
        * @Route("/executartarefa/{id}")
        */
-        public function executarTarefa(Tarefa $tarefa = null, $isAjax = null){
+        public function executarTarefa(Tarefa $tarefa = null, $isAjax = null, Agendamento $agendamento = null){
           if($tarefa != null){
             $caminho = $tarefa->getCaminho();
             $arrayBarras = explode('/', $tarefa->getCaminho());
@@ -424,6 +424,17 @@
             }
             exec($comando.$args.$caminho." /home/backup", $output, $result);
             // var_dump($comando.$args.$caminho." /home/backup");exit;
+            $logTarefa = new LogTarefa();
+            $logTarefa->setTarefa($tarefa->getId());
+            $logTarefa->setAgendamento($agendamento != NULL ? $agendamento->getId() : NULL);
+            $log = count($output) > 0 ? $output[0].' - '.$result : $result;
+            if($log != 0){
+              throw new \Exception("Falha ao executar tarefa");
+            }
+            $logTarefa->setLog($log);
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($logTarefa);
+            $entityManager->flush($logTarefa);
             return $isAjax ? new Response(json_encode(['result'=> $result == 0])) : $this->listartarefas();
           }
           else{
@@ -551,7 +562,7 @@
 
           $agendamento->setData_ultima_exec($date);
           $datediff = date_diff($agendamento->getData_ultima_exec(), $date2);
-          var_dump($datediff);exit;
+          // var_dump($datediff);exit;
           // if($agendamento->getData_ultima_exec())
         }
 
