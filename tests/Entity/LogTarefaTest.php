@@ -22,7 +22,7 @@ class LogTarefaTest extends TestCase{
      * @before
      */
     public function setUp(){
-        $this->setLogTarefa(new Tarefa());
+        $this->setLogTarefa(new LogTarefa());
         $this->getLogTarefa()->setId(1);
         $this->getLogTarefa()->setAgendamento(1);
         $this->getLogTarefa()->setTarefa(1);
