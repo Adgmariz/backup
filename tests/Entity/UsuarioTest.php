@@ -25,7 +25,7 @@ class UsuarioTest extends TestCase{
       $usuario->setSenha(md5("senha"));
       $toString = $usuario->toString();
       $jsonDecoded = json_decode($toString, true); //retorna um array
-      // var_dump($jsonDecoded);exit;
+      var_dump(count($toString));exit;
       $this->assertTrue(count($toString) > 0);
       $this->assertArrayHasKey("nome", $jsonDecoded);
       $this->assertArrayHasKey("senha", $jsonDecoded);
