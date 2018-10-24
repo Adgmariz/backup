@@ -46,6 +46,7 @@
         }
 
         public function onKernelController(FilterControllerEvent $event){
+            date_default_timezone_set('America/Sao_Paulo');
             $controller = $event->getController();
             $action = $controller[1];
             $actionsToAvoidChecking = ["index", "/", "login", "processaAgendamentos"];

@@ -416,7 +416,6 @@
         // var_dump($var);exit;
         // var_dump(exec('cp /home/alexis/Downloads/Redacao_Enem.tif /home/backup/', $output, $result), $output, $result);exit;
         //se $result for diferente de 0, é pq falhou.
-        
         }
 
         /**
@@ -525,6 +524,7 @@
               $resultTarefa->setUsuario($resultUsuario->getId());
               $resultTarefa->setDescricao($descricao);
               $resultTarefa->setCaminho($caminho);
+              $resultTarefa->setDataAlteracao(date("Y-m-d H:i:s"));
               // var_dump($resultAgendamento);exit;
               $entityManager = $this->getDoctrine()->getManager();
               $entityManager->persist($resultTarefa);
