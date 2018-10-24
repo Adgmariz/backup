@@ -72,9 +72,21 @@
              return $this->redirect($result ? 'dashboard' : '/');
 
         }
-        else{
+        /*else{
+          // var_dump($_POST);exit;
+          $usuario = $_POST['usuario'];
+          $senha = $_POST['senha'];
+          if($usuario != NULL && $senha != NULL){
+            $result = $this->getDoctrine()
+             ->getRepository(Usuario::class)
+             ->checkUsuario($usuario, md5($senha));
+            $session = new Session();
+            $session->set('islogged', true);
+             return $this->redirect($result ? 'dashboard' : '/');
+          }*/
+          else{
           return $this->redirect('/');
-        }
+          }
       }
       /**
         * @Route("/logout")

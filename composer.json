@@ -20,7 +20,8 @@
     "require-dev": {
         "symfony/browser-kit": "^4.0",
         "symfony/dotenv": "^4.0",
-        "symfony/phpunit-bridge": "^4.0"
+        "symfony/phpunit-bridge": "^4.0",
+	"phpmd/phpmd" : "@stable"
     },
     "config": {
         "preferred-install": {

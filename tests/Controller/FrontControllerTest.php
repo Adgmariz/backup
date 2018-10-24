@@ -6,6 +6,26 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class FrontControllerTest extends WebTestCase{
 
+
+        /**
+     * @before
+     */
+    /*public function setUp(){
+        $client = static::createClient();
+        $client->xmlHttpRequest('POST', '/login', array("usuario"=>"alexis",
+                                                        "senha"  =>"12345"));
+        $client->request(
+            'POST',
+            '/login',
+            array("usuario"=>"alexis",
+                  "senha"  =>"12345")
+        );
+        
+        //$this->assertEquals($client->getResponse()->getStatusCode(), 200);
+        // var_dump($client->getResponse());exit;
+    }*/
+
+
     public function testAllUrls(){
         $urls = ['/', '/dashboard', '/login', '/logout', '/listaragendamentos', '/editaragendamentos/1', '/processaeditagend', '/excluiragendamento/1',
                 '/processacriaragend', '/listartarefas', '/criartarefa', '/processacriartarefa', '/executartarefa/1','/editartarefas/1', '/processaeditatarefa', 

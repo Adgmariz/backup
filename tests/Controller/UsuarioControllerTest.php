@@ -14,7 +14,7 @@ class UsuarioControllerTest extends WebTestCase{
             $client->request('GET', $url);
             // $this->assertEquals(200, $client->getResponse()->getStatusCode());
          }
-         var_dump($client->getResponse());
+         //var_dump($client->getResponse());
     }
 
 }
